@@ -2,9 +2,20 @@ import React from "react";
 import ProductList from "../../components/ProductList/ProductList";
 import ProductItem from "../../components/ProductItem/ProductItem";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const ProductListPage = () => {
-  const products = useSelector((state) => state.products);
+  // const products = useSelector((state) => state.products);
+  var products = [];
+
+  axios({
+    method: "GET",
+    url: "http://localhost:3000/products",
+    data: null,
+  })
+    .then((res) => (products = res.data))
+    .catch((err) => console.log(err));
+
   const showProducts = (products) => {
     var result = null;
     if (products.length > 0) {
