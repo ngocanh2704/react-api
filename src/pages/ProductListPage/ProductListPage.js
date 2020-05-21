@@ -1,9 +1,10 @@
 import React from "react";
 import ProductList from "../../components/ProductList/ProductList";
 import ProductItem from "../../components/ProductItem/ProductItem";
+import { useSelector } from "react-redux";
 
 const ProductListPage = () => {
-  var products = [];
+  const products = useSelector((state) => state.products);
   const showProducts = (products) => {
     var result = null;
     if (products.length > 0) {
