@@ -4,22 +4,31 @@ import ProductItem from "../../components/ProductItem/ProductItem";
 // import { useSelector } from "react-redux";
 import apiCaller from "../../utils/apiCaller";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { actFetchProducsRequest } from "../../actions";
+
 
 const ProductListPage = () => {
-  // const products = useSelector((state) => state.products);
-  const [products, setProducts] = useState([]);
+  const products = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({ products: [] });
+  const fetchAllProducts = () => dispatch(actFetchProducsRequest());
 
   useEffect(() => {
-    apiCaller("products", "GET", null).then((res) => setProducts(res.data));
+    apiCaller("products", "GET", null).then((res) =>
+      fetchAllProducts(res.data)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onDelete = (id) => {
     apiCaller(`products/${id}`, "DELETE", null).then((res) => {
       if (res.status === 200) {
         var index = findIndex(products, id);
-        var newData = products.splice(index, 1)
-        console.log(newData)
-        setProducts(newData)
+        if (index !== -1) {
+          products.splice(index, 1);
+          setState({ ...state, products: products });
+        }
       }
     });
   };

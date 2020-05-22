@@ -45,7 +45,6 @@ const ProductActionPage = (props) => {
   useEffect(() => {
     if (id) {
       apiCaller(`products/${id}`, "GET", null).then((res) => {
-        console.log(res);
         setState({
           id: res.data.id,
           txtName: res.data.name,

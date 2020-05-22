@@ -1,28 +1,14 @@
-var initialState = [
-  {
-    id: 1,
-    name: "iPhone 6 Plus",
-    price: 400,
-    status: true,
-  },
-  {
-    id: 2,
-    name: "SamSung s7",
-    price: 300,
-    status: false,
-  },
-  {
-    id: 3,
-    name: "Oppo F1S",
-    price: 200,
-    status: true,
-  },
-];
+import { FETCH_PRODUCTS } from "../actions/actionTypes";
+
+var initialState = [];
 
 const products = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_PRODUCTS:
+      state = action.products;
+      return [...state];
     default:
-      return state;
+      return [...state];
   }
 };
 
