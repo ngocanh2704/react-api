@@ -1,6 +1,12 @@
 import React from "react";
 
 const ProductItem = (props) => {
+  const onDelete = (id) => {
+    if (confirm("Bạn có chắc chắn muốn xóa ?")) {//eslint-disable-line
+      props.onDelete(id);
+    }
+  };
+
   var { product, index } = props;
   var statusName = product.status ? "Còn Hàng" : "Hết Hàng";
   var statusClass = product.status ? "warning" : "default";
@@ -18,7 +24,11 @@ const ProductItem = (props) => {
           Sửa
         </button>
 
-        <button type="button" className="btn btn-danger">
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={() => onDelete(product.id)}
+        >
           Xóa
         </button>
       </td>

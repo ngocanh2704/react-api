@@ -13,11 +13,39 @@ const ProductListPage = () => {
     apiCaller("products", "GET", null).then((res) => setProducts(res.data));
   }, []);
 
+  const onDelete = (id) => {
+    apiCaller(`products/${id}`, "DELETE", null).then((res) => {
+      if (res.status === 200) {
+        var index = findIndex(products, id);
+        var newData = products.splice(index, 1)
+        console.log(newData)
+        setProducts(newData)
+      }
+    });
+  };
+
+  const findIndex = (data, id) => {
+    var result = -1;
+    data.forEach((product, index) => {
+      if (product.id === id) {
+        result = index;
+      }
+    });
+    return result;
+  };
+
   const showProducts = (products) => {
     var result = null;
     if (products.length > 0) {
       result = products.map((product, index) => {
-        return <ProductItem key={index} product={product} index={index} />;
+        return (
+          <ProductItem
+            key={index}
+            product={product}
+            index={index}
+            onDelete={onDelete}
+          />
+        );
       });
     }
     return result;
