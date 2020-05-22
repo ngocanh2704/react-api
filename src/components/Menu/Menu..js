@@ -9,7 +9,7 @@ const menus = [
   },
   {
     name: "Quản Lý Sản Phẩm",
-    to: "/product-list",
+    to: "/products-list",
     exact: false,
   },
 ];
