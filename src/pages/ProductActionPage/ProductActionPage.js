@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import apiCaller from "../../utils/apiCaller";
-import { Link } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 
 const ProductActionPage = (props) => {
   const [state, setState] = useState({
@@ -9,6 +9,8 @@ const ProductActionPage = (props) => {
     txtPrice: "",
     chkbStatus: "",
   });
+  var { id } = useParams();
+  var test = useHistory();
 
   const onChange = (e) => {
     var target = e.target;
@@ -22,16 +24,41 @@ const ProductActionPage = (props) => {
 
   const onSave = (e) => {
     e.preventDefault();
-    var { txtName, txtPrice, chkbStatus } = state;
-    var { history } = props;
-    apiCaller("products", "POST", {
-      name: txtName,
-      price: txtPrice,
-      status: chkbStatus,
-    }).then((res) => history.goBack());
+    var { id, txtName, txtPrice, chkbStatus } = state;
+    if (id) {
+      apiCaller(`products/${id}`, "PUT", {
+        name: txtName,
+        price: txtPrice,
+        status: chkbStatus,
+      }).then((res) => {
+        test.goBack();
+      });
+    } else {
+      apiCaller("products", "POST", {
+        name: txtName,
+        price: txtPrice,
+        status: chkbStatus,
+      }).then((res) => test.goBack());
+    }
   };
 
-  var { txtName, txtPrice, chkbStatus } = state;
+  useEffect(() => {
+    if (id) {
+      apiCaller(`products/${id}`, "GET", null).then((res) => {
+        console.log(res);
+        setState({
+          id: res.data.id,
+          txtName: res.data.name,
+          txtPrice: res.data.price,
+          chkbStatus: res.data.status,
+        });
+      });
+    }
+    //tat loi React Hook useEffect has a missing dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  var { chkbStatus, txtName, txtPrice } = state;
 
   return (
     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -65,7 +92,7 @@ const ProductActionPage = (props) => {
             <input
               type="checkbox"
               name="chkbStatus"
-              defaultValue={chkbStatus}
+              checked={chkbStatus}
               onChange={onChange}
             />
             Còn Hàng

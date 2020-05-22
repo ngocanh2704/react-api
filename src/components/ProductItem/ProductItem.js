@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ProductItem = (props) => {
   const onDelete = (id) => {
@@ -20,9 +21,12 @@ const ProductItem = (props) => {
         <span className={`label label-${statusClass}`}>{statusName}</span>
       </td>
       <td>
-        <button type="button" className="btn btn-success mr-10">
+        <Link
+          to={`product/edit/${product.id}`}
+          className="btn btn-success mr-10"
+        >
           Sửa
-        </button>
+        </Link>
 
         <button
           type="button"
