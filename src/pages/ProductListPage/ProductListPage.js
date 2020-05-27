@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import ProductList from "../../components/ProductList/ProductList";
 import ProductItem from "../../components/ProductItem/ProductItem";
 // import { useSelector } from "react-redux";
-import apiCaller from "../../utils/apiCaller";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { actFetchProducsRequest, actDeleteProductRequest } from "../../actions";
@@ -13,9 +12,7 @@ const ProductListPage = () => {
   const fetchAllProducts = () => dispatch(actFetchProducsRequest());
 
   useEffect(() => {
-    apiCaller("products", "GET", null).then((res) =>
-      fetchAllProducts(res.data)
-    );
+fetchAllProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

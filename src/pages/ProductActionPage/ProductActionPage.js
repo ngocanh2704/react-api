@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import apiCaller from "../../utils/apiCaller";
 import { Link, useParams, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  actAddProductRequest,
+  actGetProductRequest,
+  actUpdateProductRequest,
+} from "../../actions/index";
 
 const ProductActionPage = (props) => {
+  const dispatch = useDispatch();
+  const itemEditing = useSelector((state) => state.itemEditing);
+
+  const getProductRequest = (id) => dispatch(actGetProductRequest(id));
+  const updateProduct = (product) => dispatch(actUpdateProductRequest(product));
+
   const [state, setState] = useState({
     id: "",
     txtName: "",
@@ -22,43 +33,59 @@ const ProductActionPage = (props) => {
     });
   };
 
+  const clearState = () => {
+    setState({
+      ...state,
+      id: "",
+      txtName: "",
+      txtPrice: "",
+      chkbStatus: "",
+    });
+  };
+
   const onSave = (e) => {
     e.preventDefault();
-    var { id, txtName, txtPrice, chkbStatus } = state;
+    var { txtName, txtPrice, chkbStatus } = state;
     if (id) {
-      apiCaller(`products/${id}`, "PUT", {
+      updateProduct({
+        id: id,
         name: txtName,
         price: txtPrice,
         status: chkbStatus,
-      }).then((res) => {
-        test.goBack();
       });
+      clearState()
     } else {
-      apiCaller("products", "POST", {
-        name: txtName,
-        price: txtPrice,
-        status: chkbStatus,
-      }).then((res) => test.goBack());
+      
+      dispatch(
+        actAddProductRequest({
+          name: txtName,
+          price: txtPrice,
+          status: chkbStatus,
+        })
+      );
     }
+    test.goBack();
   };
 
   useEffect(() => {
     if (id) {
-      apiCaller(`products/${id}`, "GET", null).then((res) => {
-        setState({
-          id: res.data.id,
-          txtName: res.data.name,
-          txtPrice: res.data.price,
-          chkbStatus: res.data.status,
-        });
-      });
+      getProductRequest(id);
     }
     //tat loi React Hook useEffect has a missing dependency
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  var { chkbStatus, txtName, txtPrice } = state;
+  useEffect(() => {
+    setState({
+      id: itemEditing.id,
+      txtName: itemEditing.name,
+      txtPrice: itemEditing.price,
+      chkbStatus: itemEditing.status,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemEditing.id]);
 
+  var { chkbStatus, txtName, txtPrice } = state;
   return (
     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
       <form onSubmit={onSave}>
@@ -68,7 +95,7 @@ const ProductActionPage = (props) => {
             type="text"
             className="form-control"
             name="txtName"
-            defaultValue={txtName}
+            value={txtName || ''}
             onChange={onChange}
           />
         </div>
@@ -78,7 +105,7 @@ const ProductActionPage = (props) => {
             type="text"
             className="form-control"
             name="txtPrice"
-            defaultValue={txtPrice}
+            value={txtPrice || ''}
             onChange={onChange}
           />
         </div>
@@ -91,7 +118,7 @@ const ProductActionPage = (props) => {
             <input
               type="checkbox"
               name="chkbStatus"
-              checked={chkbStatus}
+              checked={!!chkbStatus}
               onChange={onChange}
             />
             Còn Hàng

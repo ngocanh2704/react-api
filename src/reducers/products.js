@@ -1,4 +1,9 @@
-import { FETCH_PRODUCTS, DELETE_PRODUCT } from "../actions/actionTypes";
+import {
+  FETCH_PRODUCTS,
+  DELETE_PRODUCT,
+  ADD_PRODUCT,
+  UPDATE_PRODUCT,
+} from "../actions/actionTypes";
 
 var initialState = [];
 
@@ -21,6 +26,13 @@ const products = (state = initialState, action) => {
     case DELETE_PRODUCT:
       index = findIndex(state, action.id);
       state.splice(index, 1);
+      return [...state];
+    case ADD_PRODUCT:
+      state.push(action.product);
+      return [...state];
+    case UPDATE_PRODUCT:
+      index = findIndex(state, action.product.id);
+      state[index] = action.product;
       return [...state];
     default:
       return [...state];
